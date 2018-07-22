@@ -1,0 +1,25 @@
+{
+  "name": "phina.rtc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "gulpfile.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daishihmr/phina.rtc.js.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/daishihmr/phina.rtc.js/issues"
+  },
+  "homepage": "https://github.com/daishihmr/phina.rtc.js#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1"
+  }
+}
