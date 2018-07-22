@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width,height=device-height,user-scalable=no,initial-scale=1,maximum-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta charset="UTF-8">
+</head>
+
+<body>
+  <script src="https://rawgit.com/phi-jp/phina.js/develop/build/phina.js"></script>
+  <script src="../build/phina.rtc.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-database.js"></script>
+  <script src="secret.js"></script>
+  <script src="FirebaseSignalingServer.js"></script>
+  <script>
+  phina.globalize();
+
+  phina.main(async() => {
+
+    const peer = phina.rtc.Peer("peer-1-host").startWaiting();
+    const waitConnection = () => new Promise((resolve) => peer.one("connection", (e) => resolve(e.connection)));
+    const conn = await waitConnection();
+    conn.on("message", (e) => {
+      const p = JSON.parse(e.data);
+      scene.addCircle(p.x, p.y);
+    });
+
+    const app = CanvasApp();
+    const scene = MainScene();
+    scene.update = (app) => {
+      const p = app.pointer;
+      if (p.getPointingStart()) {
+        scene.addCircle(p.x, p.y);
+        if (conn) conn.send(JSON.stringify({ x: p.x, y: p.y }));
+      }
+    };
+    app.replaceScene(scene);
+    app.run();
+  });
+
+  phina.define("MainScene", {
+    superClass: "DisplayScene",
+    init: function() {
+      this.superInit();
+    },
+
+    addCircle: function(x, y) {
+      CircleShape().setPosition(x, y).addChildTo(this);
+    }
+  });
+  </script>
+</body>
+
+</html>
