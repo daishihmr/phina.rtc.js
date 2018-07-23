@@ -85,10 +85,12 @@ phina.namespace(() => {
           if (client) {
             clients.erase(client);
             value.clients = clients;
-            await ref.update(value);
-            await ref.off();
+            ref.update(value)
+              .then(() => ref.off())
+              .then(resolve);
+          } else {
+            resolve();
           }
-          resolve();
         });
       });
     },
@@ -101,9 +103,11 @@ phina.namespace(() => {
           const client = value.clients.find(_ => _.peerId == peerId);
           if (client) {
             client.answerSdp = sdp;
-            await ref.update(value);
+            ref.update(value)
+              .then(resolve);
+          } else {
+            resolve();
           }
-          resolve();
         });
       });
     },
