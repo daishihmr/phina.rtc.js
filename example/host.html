@@ -21,11 +21,13 @@
   phina.main(async() => {
 
     const peer = phina.rtc.Peer("peer-1-host").startWaiting();
-    const waitConnection = () => new Promise((resolve) => peer.one("connection", (e) => resolve(e.connection)));
-    const conn = await waitConnection();
-    conn.on("message", (e) => {
-      const p = JSON.parse(e.data);
-      scene.addCircle(p.x, p.y);
+    peer.on("connection", (e) => {
+      console.log("new client");
+      const conn = e.connection;
+      conn.on("message", (e) => {
+        const p = JSON.parse(e.data);
+        scene.addCircle(p.x, p.y);
+      });
     });
 
     const app = CanvasApp();
@@ -49,7 +51,7 @@
 
     addCircle: function(x, y) {
       CircleShape().setPosition(x, y).addChildTo(this);
-    }
+    },
   });
   </script>
 </body>

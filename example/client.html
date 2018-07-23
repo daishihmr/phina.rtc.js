@@ -23,6 +23,7 @@
     const peer = phina.rtc.Peer("peer-2-client");
 
     const conn = await peer.connect("peer-1-host");
+    console.log("connected");
     conn.on("message", (e) => {
       const p = JSON.parse(e.data);
       scene.addCircle(p.x, p.y);
