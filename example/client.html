@@ -10,7 +10,8 @@
 
 <body>
   <script src="https://rawgit.com/phi-jp/phina.js/develop/build/phina.js"></script>
-  <script src="../build/phina.rtc.js"></script>
+  <!-- <script src="../build/phina.rtc.js"></script> -->
+  <script src="https://rawgit.com/daishihmr/phina.rtc.js/develop/build/phina.rtc.js"></script>
   <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-database.js"></script>
   <script src="secret.js"></script>
@@ -20,9 +21,11 @@
 
   phina.main(async() => {
 
-    const peer = phina.rtc.Peer("peer-2-client");
+    const peer = phina.rtc.Peer();
 
-    const conn = await peer.connect("peer-1-host");
+    const hostId = prompt("input host id");
+
+    const conn = await peer.connect(hostId);
     console.log("connected");
     conn.on("message", (e) => {
       const p = JSON.parse(e.data);

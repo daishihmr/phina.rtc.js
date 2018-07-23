@@ -10,7 +10,8 @@
 
 <body>
   <script src="https://rawgit.com/phi-jp/phina.js/develop/build/phina.js"></script>
-  <script src="../build/phina.rtc.js"></script>
+  <!-- <script src="../build/phina.rtc.js"></script> -->
+  <script src="https://rawgit.com/daishihmr/phina.rtc.js/develop/build/phina.rtc.js"></script>
   <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-database.js"></script>
   <script src="secret.js"></script>
@@ -20,7 +21,13 @@
 
   phina.main(async() => {
 
-    const peer = phina.rtc.Peer("peer-1-host").startWaiting();
+    const peer = phina.rtc.Peer().startWaiting();
+    window.onbeforeunload = () => {
+      peer.stopWaiting();
+    };
+
+    prompt("host id (for copy)", peer.id);
+
     peer.on("connection", (e) => {
       console.log("new client");
       const conn = e.connection;
@@ -36,7 +43,9 @@
       const p = app.pointer;
       if (p.getPointingStart()) {
         scene.addCircle(p.x, p.y);
-        if (conn) conn.send(JSON.stringify({ x: p.x, y: p.y }));
+        peer.connections.forIn((peerId, conn) => {
+          conn.send(JSON.stringify({ x: p.x, y: p.y }));
+        });
       }
     };
     app.replaceScene(scene);

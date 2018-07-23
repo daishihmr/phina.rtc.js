@@ -89,10 +89,12 @@ phina.namespace(() => {
           const conn = phina.rtc.Connection(peerId);
 
           const sdp = await conn._createOffer();
-          await this.signalingServer.offer(peerId, sdp, this.id);
+          await this.signalingServer.offer(peerId, sdp);
 
-          this.connections[peerId] = conn;
-          conn.one("open", () => resolve(conn));
+          conn.one("open", () => {
+            this.connections[peerId] = conn;
+            resolve(conn);
+          });
         } catch (err) {
           reject(err);
         }
@@ -109,10 +111,10 @@ phina.namespace(() => {
 
         const conn = phina.rtc.Connection(peerId);
         const answerSdp = await conn._receiveOffer(offerSdp);
-        signalingServer.answer(peerId, answerSdp, this.id);
+        await signalingServer.answer(peerId, answerSdp);
 
-        this.connections[peerId] = conn;
         conn.one("open", () => {
+          this.connections[peerId] = conn;
           this.flare("connection", { peerId: peerId, connection: conn });
         });
       });
