@@ -87,12 +87,12 @@ phina.namespace(() => {
       return new Promise(async(resolve, reject) => {
         try {
           const conn = phina.rtc.Connection(peerId);
+          this.connections[peerId] = conn;
 
           const sdp = await conn._createOffer();
           await this.signalingServer.offer(peerId, sdp);
 
           conn.one("open", () => {
-            this.connections[peerId] = conn;
             resolve(conn);
           });
         } catch (err) {
